@@ -1,8 +1,8 @@
 import { IconConfig, DEFAULT_CONFIG } from '../types'
 
 const KEYS: (keyof IconConfig)[] = [
-  'iconName', 'themeId', 'containerColor', 'iconColor', 'containerSize',
-  'radiusRatio', 'iconRatio', 'strokeWidth', 'absoluteStroke',
+  'iconName', 'themeId', 'containerColor', 'iconColor', 'containerVisible',
+  'containerSize', 'radiusRatio', 'iconRatio', 'strokeWidth', 'absoluteStroke',
   'lockProportions', 'linecap', 'linejoin',
 ]
 
@@ -11,6 +11,7 @@ const SHORT: Record<keyof IconConfig, string> = {
   themeId: 't',
   containerColor: 'cc',
   iconColor: 'ic',
+  containerVisible: 'cv',
   containerSize: 's',
   radiusRatio: 'r',
   iconRatio: 'ir',

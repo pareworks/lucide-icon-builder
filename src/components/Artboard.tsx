@@ -12,7 +12,7 @@ type Props = {
 // the container.
 export const Artboard = forwardRef<SVGSVGElement, Props>(({ config }, ref) => {
   const {
-    iconName, containerColor, iconColor, containerSize,
+    iconName, containerColor, containerVisible, iconColor, containerSize,
     radiusRatio, iconRatio, strokeWidth, absoluteStroke,
     linecap, linejoin,
   } = config
@@ -39,7 +39,7 @@ export const Artboard = forwardRef<SVGSVGElement, Props>(({ config }, ref) => {
         height={containerSize}
         rx={radiusPx}
         ry={radiusPx}
-        fill={containerColor}
+        fill={containerVisible ? containerColor : 'none'}
       />
       {Icon && (
         <g transform={`translate(${iconOffset}, ${iconOffset})`}>

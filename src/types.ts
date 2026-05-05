@@ -6,6 +6,7 @@ export type IconConfig = {
   themeId: string // color family id, or 'custom'
   containerColor: string // hex
   iconColor: string // hex
+  containerVisible: boolean // when false, container is transparent but geometry is kept
   containerSize: number // px
   radiusRatio: number // 0-0.5 (of container size)
   iconRatio: number // 0-1 (icon size / container size)
@@ -27,6 +28,7 @@ export const DEFAULT_CONFIG: IconConfig = {
   themeId: 'deep-orange',
   containerColor: '#F6C7BB',
   iconColor: '#F06035',
+  containerVisible: true,
   containerSize: 64,
   radiusRatio: 0.15,
   iconRatio: 0.5,

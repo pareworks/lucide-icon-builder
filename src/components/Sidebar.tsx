@@ -94,6 +94,12 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
       </Section>
 
       <Section title="Custom Colors">
+        <Toggle
+          label="Show container fill"
+          checked={config.containerVisible}
+          onChange={(v) => update('containerVisible', v)}
+          hint="When off, the container is transparent but its size still defines the SVG bounding box for alignment."
+        />
         <ColorRow
           label="Container"
           value={config.containerColor}
