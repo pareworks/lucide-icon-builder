@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link2, Check } from 'lucide-react'
+import { Link2, Check, AlertCircle } from 'lucide-react'
 import { IconConfig, DEFAULT_CONFIG } from './types'
 import { Sidebar } from './components/Sidebar'
 import { Artboard } from './components/Artboard'
 import { ZoomControl, DEFAULT_ZOOM } from './components/ZoomControl'
 import { encodeConfig, decodeConfig } from './lib/urlState'
 import { copyText } from './lib/exporters'
+
+type ShareState = 'idle' | 'copied' | 'error'
 
 const initialConfig = (): IconConfig => {
   const fromUrl = decodeConfig(window.location.hash.replace(/^#/, ''))
@@ -15,7 +17,7 @@ const initialConfig = (): IconConfig => {
 export default function App() {
   const [config, setConfig] = useState<IconConfig>(initialConfig)
   const artboardRef = useRef<SVGSVGElement>(null)
-  const [shared, setShared] = useState(false)
+  const [shareState, setShareState] = useState<ShareState>('idle')
   const [zoom, setZoom] = useState<number>(DEFAULT_ZOOM)
 
   // Sync to URL hash whenever config changes (after first paint)
@@ -31,10 +33,14 @@ export default function App() {
     const url = `${window.location.origin}${window.location.pathname}${window.location.search}#${encodeConfig(config)}`
     try {
       await copyText(url)
-      setShared(true)
-      setTimeout(() => setShared(false), 1200)
-    } catch {
-      /* ignore */
+      setShareState('copied')
+      setTimeout(() => setShareState('idle'), 1500)
+    } catch (e) {
+      console.error('Share failed:', e)
+      setShareState('error')
+      setTimeout(() => setShareState('idle'), 2500)
+      // Last-resort fallback so the user can still copy manually
+      window.prompt('Copy this link to share:', url)
     }
   }
 
@@ -45,11 +51,19 @@ export default function App() {
         <button
           type="button"
           onClick={handleShare}
-          className="absolute top-4 right-4 flex items-center gap-1.5 bg-panel-2/80 backdrop-blur hover:bg-panel-3 text-white text-xs px-3 py-1.5 rounded-md transition-colors border border-line"
+          className={`absolute top-4 right-4 flex items-center gap-1.5 backdrop-blur text-white text-xs px-3 py-1.5 rounded-md transition-colors border ${
+            shareState === 'error'
+              ? 'bg-red-500/20 hover:bg-red-500/30 border-red-500/40'
+              : 'bg-panel-2/80 hover:bg-panel-3 border-line'
+          }`}
           title="Copy a shareable link to this configuration"
         >
-          {shared ? <Check className="w-3 h-3" /> : <Link2 className="w-3 h-3" />}
-          {shared ? 'Link copied' : 'Share'}
+          {shareState === 'copied' && <Check className="w-3 h-3" />}
+          {shareState === 'error' && <AlertCircle className="w-3 h-3" />}
+          {shareState === 'idle' && <Link2 className="w-3 h-3" />}
+          {shareState === 'copied' && 'Link copied'}
+          {shareState === 'error' && 'Copy failed'}
+          {shareState === 'idle' && 'Share'}
         </button>
         <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
           <div

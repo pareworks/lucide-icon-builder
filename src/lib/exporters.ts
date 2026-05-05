@@ -26,8 +26,33 @@ export const downloadFile = (blob: Blob, filename: string) => {
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export const copyText = async (text: string) => {
-  await navigator.clipboard.writeText(text)
+export const copyText = async (text: string): Promise<void> => {
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return
+    } catch {
+      // Permission denied or transient failure — fall through to the legacy path
+    }
+  }
+  // Legacy fallback: hidden textarea + execCommand('copy'). Works in non-secure
+  // contexts and when clipboard permission has been denied.
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', '')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '0'
+  textarea.style.left = '-9999px'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  try {
+    textarea.focus()
+    textarea.select()
+    const ok = document.execCommand('copy')
+    if (!ok) throw new Error('Copy command was rejected')
+  } finally {
+    document.body.removeChild(textarea)
+  }
 }
 
 export const renderSvgToPngBlob = async (svgString: string, scale = 2): Promise<Blob> => {
