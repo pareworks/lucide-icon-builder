@@ -81,7 +81,6 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
     <aside className="w-[340px] shrink-0 bg-panel border-r border-line h-full overflow-y-auto scrollbar-thin">
       <div className="px-4 py-4 border-b border-line">
         <h1 className="text-base font-semibold text-white">Lucide Icon Builder</h1>
-        <p className="text-xs text-muted mt-0.5">Edrolo themed icons</p>
       </div>
 
       <Section title="Icon">
