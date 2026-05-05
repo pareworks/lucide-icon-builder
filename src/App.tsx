@@ -3,6 +3,7 @@ import { Link2, Check } from 'lucide-react'
 import { IconConfig, DEFAULT_CONFIG } from './types'
 import { Sidebar } from './components/Sidebar'
 import { Artboard } from './components/Artboard'
+import { ZoomControl, DEFAULT_ZOOM } from './components/ZoomControl'
 import { encodeConfig, decodeConfig } from './lib/urlState'
 import { copyText } from './lib/exporters'
 
@@ -15,6 +16,7 @@ export default function App() {
   const [config, setConfig] = useState<IconConfig>(initialConfig)
   const artboardRef = useRef<SVGSVGElement>(null)
   const [shared, setShared] = useState(false)
+  const [zoom, setZoom] = useState<number>(DEFAULT_ZOOM)
 
   // Sync to URL hash whenever config changes (after first paint)
   useEffect(() => {
@@ -49,18 +51,25 @@ export default function App() {
           {shared ? <Check className="w-3 h-3" /> : <Link2 className="w-3 h-3" />}
           {shared ? 'Link copied' : 'Share'}
         </button>
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
           <div
             className="rounded-sm shadow-2xl"
             style={{
+              transform: `scale(${zoom / 100})`,
+              transformOrigin: 'center center',
+              transition: 'transform 120ms ease-out',
               filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35))',
             }}
           >
             <Artboard ref={artboardRef} config={config} />
           </div>
         </div>
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-muted">
-          {config.containerSize} × {config.containerSize} px
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 text-xs text-muted">
+          <span className="tabular-nums">
+            {config.containerSize} × {config.containerSize} px
+          </span>
+          <span className="w-px h-3 bg-line" />
+          <ZoomControl value={zoom} onChange={setZoom} />
         </div>
       </main>
     </div>
