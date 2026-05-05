@@ -28,7 +28,7 @@ export const DEFAULT_CONFIG: IconConfig = {
   containerColor: '#F6C7BB',
   iconColor: '#F06035',
   containerSize: 64,
-  radiusRatio: 0.25,
+  radiusRatio: 0.15,
   iconRatio: 0.5,
   strokeWidth: 2,
   absoluteStroke: false,
