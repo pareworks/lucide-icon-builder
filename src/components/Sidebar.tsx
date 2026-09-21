@@ -4,6 +4,7 @@ import { PALETTE_BY_ID, DEFAULT_BACKGROUND_SHADE, DEFAULT_FOREGROUND_SHADE } fro
 import { Section, Slider, Toggle, Segmented } from './controls'
 import { ThemePicker } from './ThemePicker'
 import { PaletteGrid } from './PaletteGrid'
+import { isSocialIcon } from '../lib/social'
 import { IconPicker } from './IconPicker'
 import { ExportPanel } from './ExportPanel'
 
@@ -172,6 +173,9 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
       </Section>
 
       <Section title="Stroke">
+        {isSocialIcon(config.iconName) ? (
+          <p className="text-xs text-muted">Social logos use filled shapes. Use icon colour and scale to customise them.</p>
+        ) : (<>
         <Slider
           label="Stroke width"
           value={config.strokeWidth}
@@ -211,6 +215,7 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
             ]}
           />
         </div>
+        </>)}
       </Section>
 
       <Section title="Export">
