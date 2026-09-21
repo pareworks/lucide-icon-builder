@@ -20,3 +20,7 @@ The site will be available at `https://<your-username>.github.io/lucide-icon-bui
 ## Sharing
 
 Click **Share** in the top-right of the artboard to copy a URL that encodes the current configuration. Anyone opening the link will see the same icon.
+
+## Social icons
+
+Choose **Social** in the icon picker to browse 26 SVG logos from the [Figma community file](https://www.figma.com/design/vLLJskmSRUdnoxnv4U4TPU/Social-Media-Icons---Logos--Community-?node-id=0-1). Search also finds these in **All**. Logos support themes, custom colours, sizing, transparent containers, sharing, and SVG/PNG export. They use filled shapes, so stroke settings apply only to Lucide icons. Original SVGs and source node references are in `src/assets/social/`.

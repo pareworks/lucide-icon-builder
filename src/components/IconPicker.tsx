@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { Segmented } from './controls'
+import { isSocialIcon } from '../lib/social'
 import { Search } from 'lucide-react'
 import { searchIcons, getIconComponent, iconLabel } from '../lib/lucide'
 
@@ -9,14 +11,23 @@ type Props = {
 
 export const IconPicker = ({ value, onChange }: Props) => {
   const [query, setQuery] = useState('')
-  const results = useMemo(() => searchIcons(query, 200), [query])
+  const [category, setCategory] = useState<'all' | 'lucide' | 'social'>(() => isSocialIcon(value) ? 'social' : 'all')
+  const results = useMemo(() => searchIcons(query, 200, category), [query, category])
 
   return (
     <div>
+      <div className="mb-2">
+        <Segmented value={category} onChange={setCategory} options={[
+          { value: 'all', label: 'All' },
+          { value: 'lucide', label: 'Lucide' },
+          { value: 'social', label: 'Social' },
+        ]} />
+      </div>
       <div className="relative mb-2">
         <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted" />
         <input
           type="text"
+          aria-label="Search icons"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search icons…"
@@ -34,6 +45,8 @@ export const IconPicker = ({ value, onChange }: Props) => {
               type="button"
               onClick={() => onChange(name)}
               title={iconLabel(name)}
+              aria-label={iconLabel(name)}
+              aria-pressed={selected}
               className={`aspect-square flex items-center justify-center rounded transition-colors ${
                 selected ? 'bg-white text-black' : 'text-muted hover:bg-panel-2 hover:text-white'
               }`}
