@@ -3,8 +3,8 @@ import { IconConfig, SIZE_PRESETS, DEFAULT_CONFIG } from '../types'
 import { PALETTE_BY_ID, DEFAULT_BACKGROUND_SHADE, DEFAULT_FOREGROUND_SHADE } from '../data/palette'
 import { Section, Slider, Toggle, Segmented } from './controls'
 import { ThemePicker } from './ThemePicker'
-import { PaletteGrid } from './PaletteGrid'
 import { isSocialIcon } from '../lib/social'
+import { ColorPicker } from './ColorPicker'
 import { IconPicker } from './IconPicker'
 import { ExportPanel } from './ExportPanel'
 
@@ -14,38 +14,7 @@ type Props = {
   artboardRef: RefObject<SVGSVGElement>
 }
 
-const ColorRow = ({
-  label, value, onChange, onOpen, isOpen,
-}: {
-  label: string
-  value: string
-  onChange: (hex: string) => void
-  onOpen: () => void
-  isOpen: boolean
-}) => (
-  <div>
-    <div className="flex items-center justify-between mb-1.5">
-      <label className="text-sm text-white">{label}</label>
-      <button
-        type="button"
-        onClick={onOpen}
-        className="flex items-center gap-2 bg-panel-2 hover:bg-panel-3 px-2 py-1 rounded text-xs text-muted"
-      >
-        <span className="w-3.5 h-3.5 rounded-sm border border-white/10" style={{ backgroundColor: value }} />
-        <span className="font-mono">{value.toUpperCase()}</span>
-      </button>
-    </div>
-    {isOpen && (
-      <div className="bg-panel-2 rounded-md p-2 mt-1">
-        <PaletteGrid value={value} onChange={onChange} />
-      </div>
-    )}
-  </div>
-)
-
 export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
-  const [openColor, setOpenColor] = useState<'container' | 'icon' | null>(null)
-
   const [activePreset, setActivePreset] = useState<string>(() =>
     config.radiusRatio === DEFAULT_CONFIG.radiusRatio && config.iconRatio === DEFAULT_CONFIG.iconRatio
       && config.strokeWidth === DEFAULT_CONFIG.strokeWidth
@@ -76,34 +45,30 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
     setConfig((prev) => ({ ...prev, [key]: value }))
 
   return (
-    <aside className="w-full bg-panel border-r border-line h-full overflow-y-auto scrollbar-thin">
+    <aside className="w-full bg-panel h-full overflow-y-auto scrollbar-thin">
       <Section title="Icon">
-        <IconPicker value={config.iconName} onChange={(name) => update('iconName', name)} />
+        <IconPicker containerColor={config.containerColor} iconColor={config.iconColor} containerVisible={config.containerVisible} value={config.iconName} onChange={(name) => update('iconName', name)} />
       </Section>
 
       <Section title="Theme">
-        <ThemePicker value={config.themeId} onChange={applyTheme} />
+        <ThemePicker containerColor={config.containerColor} iconColor={config.iconColor} value={config.themeId} onChange={applyTheme} />
       </Section>
 
-      <Section title="Custom Colors">
+      <Section title="Custom colours">
         <Toggle
           label="Show container fill"
           checked={config.containerVisible}
           onChange={(v) => update('containerVisible', v)}
         />
-        <ColorRow
+        <ColorPicker
           label="Container"
           value={config.containerColor}
           onChange={(hex) => setConfig((p) => ({ ...p, containerColor: hex, themeId: 'custom' }))}
-          onOpen={() => setOpenColor(openColor === 'container' ? null : 'container')}
-          isOpen={openColor === 'container'}
         />
-        <ColorRow
+        <ColorPicker
           label="Icon"
           value={config.iconColor}
           onChange={(hex) => setConfig((p) => ({ ...p, iconColor: hex, themeId: 'custom' }))}
-          onOpen={() => setOpenColor(openColor === 'icon' ? null : 'icon')}
-          isOpen={openColor === 'icon'}
         />
       </Section>
 

@@ -10,7 +10,10 @@ const pascalToKebab = (s: string) =>
 const kebabToPascal = (s: string) =>
   s.split('-').map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join('')
 
-export const iconLabel = (pascal: string): string => socialIconLabel(pascal) ?? pascalToKebab(pascal).replace(/-/g, ' ')
+export const iconLabel = (pascal: string): string => {
+  const label = socialIconLabel(pascal) ?? pascalToKebab(pascal).replace(/-/g, ' ')
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
 export const iconSlug = (pascal: string): string => pascalToKebab(pascal)
 
 export const getIconComponent = (name: string): LucideIcon | undefined => {

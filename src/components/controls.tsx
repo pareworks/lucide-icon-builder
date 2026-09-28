@@ -1,12 +1,12 @@
 import { ReactNode, useId, useState } from 'react'
 
 export const Section = ({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) => (
-  <section className="border-b border-line py-4 px-4">
-    <header className="flex items-center justify-between mb-3">
-      <h3 className="text-[11px] uppercase tracking-wider text-muted font-medium">{title}</h3>
+  <section className="py-6 px-6">
+    <header className="flex items-center justify-between mb-4">
+      <h3 className="text-sm text-muted font-medium">{title}</h3>
       {action}
     </header>
-    <div className="space-y-3">{children}</div>
+    <div className="space-y-4">{children}</div>
   </section>
 )
 
@@ -88,14 +88,14 @@ export const Segmented = <T extends string>({
   options: { value: T; label: string }[]
   onChange: (v: T) => void
 }) => (
-  <div className="flex bg-panel-2 rounded-md p-0.5">
+  <div className="flex bg-panel-2 rounded-md">
     {options.map((o) => (
       <button
         key={o.value}
         type="button"
         onClick={() => onChange(o.value)}
         aria-pressed={value === o.value}
-        className={`flex-1 text-xs py-1.5 rounded transition-colors ${
+        className={`flex-1 text-xs py-2.5 rounded-md transition-colors ${
           value === o.value ? 'bg-panel-3 text-white' : 'text-muted hover:text-white'
         }`}
       >

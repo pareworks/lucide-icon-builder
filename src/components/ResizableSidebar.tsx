@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
-const MIN_WIDTH = 260
-const DEFAULT_WIDTH = 340
+const MIN_WIDTH = 300
+const DEFAULT_WIDTH = 380
 const maxWidth = () => Math.max(MIN_WIDTH, Math.min(560, window.innerWidth - 96))
 const clampWidth = (width: number) => Math.max(MIN_WIDTH, Math.min(maxWidth(), width))
 
