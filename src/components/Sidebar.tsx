@@ -90,7 +90,7 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
 
       <Section title="Theme">
         <ThemePicker value={config.themeId} onChange={applyTheme} />
-        <p className="text-xs text-muted mt-2">Background uses the 100 shade · icon uses the 400 shade.</p>
+        <p className="text-xs text-muted mt-2">Background uses the {DEFAULT_BACKGROUND_SHADE} shade · icon uses the {DEFAULT_FOREGROUND_SHADE} shade.</p>
       </Section>
 
       <Section title="Custom Colors">

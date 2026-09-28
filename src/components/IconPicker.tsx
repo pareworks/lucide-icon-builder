@@ -12,7 +12,7 @@ type Props = {
 export const IconPicker = ({ value, onChange }: Props) => {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<'all' | 'lucide' | 'social'>(() => isSocialIcon(value) ? 'social' : 'all')
-  const results = useMemo(() => searchIcons(query, 200, category), [query, category])
+  const results = useMemo(() => searchIcons(query, category), [query, category])
 
   return (
     <div>
@@ -34,6 +34,7 @@ export const IconPicker = ({ value, onChange }: Props) => {
           className="w-full bg-panel-2 text-sm rounded-md pl-7 pr-2 py-1.5 outline-none focus:ring-1 focus:ring-white/40 placeholder:text-muted"
         />
       </div>
+      <div className="mb-2 text-xs text-muted" role="status">{results.length} icons</div>
       <div className="grid grid-cols-6 gap-1 max-h-44 overflow-y-auto scrollbar-thin">
         {results.map((name) => {
           const Icon = getIconComponent(name)

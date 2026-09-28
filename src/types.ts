@@ -1,3 +1,5 @@
+import { PALETTE_BY_ID, DEFAULT_BACKGROUND_SHADE, DEFAULT_FOREGROUND_SHADE } from './data/palette'
+
 export type LineCap = 'butt' | 'round' | 'square'
 export type LineJoin = 'miter' | 'round' | 'bevel'
 
@@ -26,11 +28,11 @@ export const SIZE_PRESETS: { id: 'sm' | 'md' | 'lg'; label: string; size: number
 export const DEFAULT_CONFIG: IconConfig = {
   iconName: 'telescope',
   themeId: 'deep-orange',
-  containerColor: '#F6C7BB',
-  iconColor: '#F06035',
+  containerColor: PALETTE_BY_ID['deep-orange'].shades[DEFAULT_BACKGROUND_SHADE],
+  iconColor: PALETTE_BY_ID['deep-orange'].shades[DEFAULT_FOREGROUND_SHADE],
   containerVisible: true,
   containerSize: 64,
-  radiusRatio: 0.15,
+  radiusRatio: 0.09,
   iconRatio: 0.5,
   strokeWidth: 2,
   absoluteStroke: false,
