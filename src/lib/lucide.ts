@@ -28,18 +28,9 @@ export const resolveIconName = (name: string): string | undefined => {
   return undefined
 }
 
-export const searchIcons = (query: string, limit = 200, category: 'all' | 'lucide' | 'social' = 'all'): string[] => {
+export const searchIcons = (query: string, category: 'all' | 'lucide' | 'social' = 'all'): string[] => {
   const q = query.trim().toLowerCase()
   const names = category === 'social' ? SOCIAL_ICON_NAMES
     : category === 'lucide' ? ICON_NAMES.filter((name) => !socialIcons[name]) : ICON_NAMES
-  if (!q) return names.slice(0, limit)
-  const out: string[] = []
-  for (const name of names) {
-    const slug = pascalToKebab(name)
-    if (slug.includes(q) || iconLabel(name).toLowerCase().includes(q)) {
-      out.push(name)
-      if (out.length >= limit) break
-    }
-  }
-  return out
+  return names.filter((name) => !q || iconSlug(name).includes(q) || iconLabel(name).toLowerCase().includes(q))
 }

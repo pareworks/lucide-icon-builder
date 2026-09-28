@@ -171,5 +171,5 @@ export const PALETTE: ColorFamily[] = [
 
 export const PALETTE_BY_ID = Object.fromEntries(PALETTE.map((f) => [f.id, f]))
 
-export const DEFAULT_BACKGROUND_SHADE: Shade = '100'
+export const DEFAULT_BACKGROUND_SHADE: Shade = '50'
 export const DEFAULT_FOREGROUND_SHADE: Shade = '400'
