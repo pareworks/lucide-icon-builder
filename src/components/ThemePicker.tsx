@@ -8,12 +8,8 @@ type Props = {
 }
 
 const Swatch = ({ family }: { family: ColorFamily }) => (
-  <span
-    className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
-    style={{ backgroundColor: family.shades['100'] }}
-  >
-    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: family.shades['400'] }} />
-  </span>
+  <span className="w-4 h-4 rounded-full shrink-0 border border-white/10"
+    style={{ backgroundColor: family.shades['400'] }} />
 )
 
 const RowLabel = ({ family }: { family: ColorFamily }) => (
@@ -31,7 +27,7 @@ export const ThemePicker = ({ value, onChange }: Props) => {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
-  const current = PALETTE.find((f) => f.id === value) ?? PALETTE[0]
+  const current = PALETTE.find((f) => f.id === value)
 
   useEffect(() => {
     if (!open) return
@@ -55,11 +51,12 @@ export const ThemePicker = ({ value, onChange }: Props) => {
         type="button"
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md bg-panel-2 hover:bg-panel-3 transition-colors"
+        aria-label="Theme"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <Swatch family={current} />
-        <RowLabel family={current} />
+        {current ? <><Swatch family={current} /><RowLabel family={current} /></>
+          : <span className="flex-1 text-left text-sm text-white">Custom colours</span>}
         <ChevronDown
           className={`w-3.5 h-3.5 text-muted shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
         />

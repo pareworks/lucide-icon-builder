@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { IconConfig, DEFAULT_CONFIG } from './types'
+import { ResizableSidebar } from './components/ResizableSidebar'
 import { Sidebar } from './components/Sidebar'
 import { Artboard } from './components/Artboard'
 import { ZoomControl, DEFAULT_ZOOM } from './components/ZoomControl'
@@ -26,7 +27,9 @@ export default function App() {
 
   return (
     <div className="flex h-full">
-      <Sidebar config={config} setConfig={setConfig} artboardRef={artboardRef} />
+      <ResizableSidebar>
+        <Sidebar config={config} setConfig={setConfig} artboardRef={artboardRef} />
+      </ResizableSidebar>
       <main className="flex-1 relative checker overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
           <div

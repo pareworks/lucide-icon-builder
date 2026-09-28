@@ -4,11 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        panel: '#1a1a1a',
-        'panel-2': '#242424',
-        'panel-3': '#2e2e2e',
-        line: '#363636',
-        muted: '#8a8a8a',
+        white: '#deded9',
+        black: '#202120',
+        panel: '#202120',
+        'panel-2': '#292b29',
+        'panel-3': '#353834',
+        line: '#3d403b',
+        muted: '#a0a39b',
       },
     },
   },

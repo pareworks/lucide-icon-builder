@@ -91,16 +91,14 @@ export const ExportPanel = ({ config, artboardRef }: Props) => {
         <button
           type="button"
           onClick={handleDownload}
-          className="flex items-center justify-center gap-1.5 bg-white text-black text-sm py-2 rounded-md hover:bg-white/90 transition-colors"
+          className="flex items-center justify-center gap-1.5 bg-panel-3 text-white text-sm py-2 rounded-md hover:bg-line transition-colors"
         >
           {flash === 'download' ? <Check className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
           {flash === 'download' ? 'Saved' : 'Download'}
         </button>
       </div>
       {error && <div className="text-xs text-red-400">{error}</div>}
-      <p className="text-xs text-muted leading-relaxed">
-        SVG: paste into Webflow's code editor, or import the file into Canva.
-      </p>
+
     </div>
   )
 }

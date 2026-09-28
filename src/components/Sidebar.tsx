@@ -1,5 +1,5 @@
 import { RefObject, useState } from 'react'
-import { IconConfig, SIZE_PRESETS } from '../types'
+import { IconConfig, SIZE_PRESETS, DEFAULT_CONFIG } from '../types'
 import { PALETTE_BY_ID, DEFAULT_BACKGROUND_SHADE, DEFAULT_FOREGROUND_SHADE } from '../data/palette'
 import { Section, Slider, Toggle, Segmented } from './controls'
 import { ThemePicker } from './ThemePicker'
@@ -46,22 +46,19 @@ const ColorRow = ({
 export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
   const [openColor, setOpenColor] = useState<'container' | 'icon' | null>(null)
 
-  const setSize = (newSize: number) => {
-    setConfig((prev) => {
-      if (prev.lockProportions) {
-        // Ratios stay; rendered px scale automatically
-        return { ...prev, containerSize: newSize }
-      }
-      // Preserve absolute pixel values for radius and icon size
-      const oldRadiusPx = prev.radiusRatio * prev.containerSize
-      const oldIconPx = prev.iconRatio * prev.containerSize
-      return {
-        ...prev,
-        containerSize: newSize,
-        radiusRatio: Math.min(0.5, oldRadiusPx / newSize),
-        iconRatio: Math.min(1, oldIconPx / newSize),
-      }
-    })
+  const [activePreset, setActivePreset] = useState<string>(() =>
+    config.radiusRatio === DEFAULT_CONFIG.radiusRatio && config.iconRatio === DEFAULT_CONFIG.iconRatio
+      && config.strokeWidth === DEFAULT_CONFIG.strokeWidth
+      ? SIZE_PRESETS.find((p) => p.size === config.containerSize)?.id ?? '' : '')
+
+  const setSize = (containerSize: number) => {
+    setActivePreset('')
+    setConfig((prev) => ({ ...prev, containerSize, lockProportions: true }))
+  }
+
+  const updateSlider = (key: 'radiusRatio' | 'iconRatio' | 'strokeWidth', value: number) => {
+    setActivePreset('')
+    setConfig((prev) => ({ ...prev, [key]: value }))
   }
 
   const applyTheme = (themeId: string) => {
@@ -79,18 +76,13 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
     setConfig((prev) => ({ ...prev, [key]: value }))
 
   return (
-    <aside className="w-[340px] shrink-0 bg-panel border-r border-line h-full overflow-y-auto scrollbar-thin">
-      <div className="px-4 py-4 border-b border-line">
-        <h1 className="text-base font-semibold text-white">Lucide Icon Builder</h1>
-      </div>
-
+    <aside className="w-full bg-panel border-r border-line h-full overflow-y-auto scrollbar-thin">
       <Section title="Icon">
         <IconPicker value={config.iconName} onChange={(name) => update('iconName', name)} />
       </Section>
 
       <Section title="Theme">
         <ThemePicker value={config.themeId} onChange={applyTheme} />
-        <p className="text-xs text-muted mt-2">Background uses the {DEFAULT_BACKGROUND_SHADE} shade · icon uses the {DEFAULT_FOREGROUND_SHADE} shade.</p>
       </Section>
 
       <Section title="Custom Colors">
@@ -98,7 +90,6 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
           label="Show container fill"
           checked={config.containerVisible}
           onChange={(v) => update('containerVisible', v)}
-          hint="When off, the container is transparent but its size still defines the SVG bounding box for alignment."
         />
         <ColorRow
           label="Container"
@@ -116,32 +107,18 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
         />
       </Section>
 
-      <Section
-        title="Size"
-        action={
-          <button
-            type="button"
-            onClick={() => update('lockProportions', !config.lockProportions)}
-            className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded ${config.lockProportions ? 'bg-white text-black' : 'bg-panel-2 text-muted'}`}
-            title="Lock proportions: radius, icon, and stroke scale with container size"
-          >
-            {config.lockProportions ? 'Locked' : 'Free'}
-          </button>
-        }
-      >
+      <Section title="Size">
         <Segmented
-          value={
-            SIZE_PRESETS.find((p) => p.size === config.containerSize)?.id ?? 'custom'
-          }
-          onChange={(v) => {
-            if (v === 'custom') return
-            const preset = SIZE_PRESETS.find((p) => p.id === v)
-            if (preset) setSize(preset.size)
+          value={activePreset}
+          onChange={(id) => {
+            const preset = SIZE_PRESETS.find((p) => p.id === id)
+            if (!preset) return
+            setActivePreset(id)
+            setConfig((prev) => ({ ...prev, containerSize: preset.size,
+              radiusRatio: DEFAULT_CONFIG.radiusRatio, iconRatio: DEFAULT_CONFIG.iconRatio,
+              strokeWidth: DEFAULT_CONFIG.strokeWidth, lockProportions: true }))
           }}
-          options={[
-            ...SIZE_PRESETS.map((p) => ({ value: p.id, label: `${p.label} ${p.size}` })),
-            { value: 'custom', label: 'Custom' },
-          ]}
+          options={SIZE_PRESETS.map((p) => ({ value: p.id, label: `${p.label} ${p.size}` }))}
         />
         <Slider
           label="Container size"
@@ -158,7 +135,7 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
           min={0}
           max={50}
           step={1}
-          onChange={(v) => update('radiusRatio', v / 100)}
+          onChange={(v) => updateSlider('radiusRatio', v / 100)}
           suffix="%"
         />
         <Slider
@@ -167,14 +144,14 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
           min={20}
           max={90}
           step={1}
-          onChange={(v) => update('iconRatio', v / 100)}
+          onChange={(v) => updateSlider('iconRatio', v / 100)}
           suffix="%"
         />
       </Section>
 
       <Section title="Stroke">
         {isSocialIcon(config.iconName) ? (
-          <p className="text-xs text-muted">Social logos use filled shapes. Use icon colour and scale to customise them.</p>
+          <p className="text-xs text-muted">Logos use filled shapes.</p>
         ) : (<>
         <Slider
           label="Stroke width"
@@ -182,14 +159,13 @@ export const Sidebar = ({ config, setConfig, artboardRef }: Props) => {
           min={0.5}
           max={3}
           step={0.25}
-          onChange={(v) => update('strokeWidth', v)}
+          onChange={(v) => updateSlider('strokeWidth', v)}
           suffix="px"
         />
         <Toggle
           label="Absolute stroke width"
           checked={config.absoluteStroke}
           onChange={(v) => update('absoluteStroke', v)}
-          hint="Lucide flag — keeps stroke at exactly this px regardless of icon scale"
         />
         <div>
           <label className="text-xs text-muted block mb-1.5">Line cap</label>

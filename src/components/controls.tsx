@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useId, useState } from 'react'
 
 export const Section = ({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) => (
   <section className="border-b border-line py-4 px-4">
@@ -20,26 +20,48 @@ export const Slider = ({
   step?: number
   onChange: (v: number) => void
   suffix?: string
-}) => (
-  <div>
-    <div className="flex items-center justify-between mb-1.5">
-      <label className="text-sm text-white">{label}</label>
-      <span className="text-sm text-muted tabular-nums">
-        {Number.isInteger(value) ? value : value.toFixed(2)}
-        {suffix}
+}) => {
+  const id = useId()
+  const [draft, setDraft] = useState<string | null>(null)
+  const [dragging, setDragging] = useState(false)
+  const position = Math.max(0, Math.min(100, (value - min) / (max - min) * 100))
+  const update = (next: number) => {
+    if (!Number.isFinite(next)) return
+    const snapped = min + Math.round((next - min) / step) * step
+    const nextValue = Number(Math.max(min, Math.min(max, snapped)).toFixed(4))
+    if (nextValue !== value) onChange(nextValue)
+  }
+  const commit = () => {
+    if (draft !== null && draft.trim()) update(Number(draft))
+    setDraft(null)
+  }
+  return (
+    <div className="integrated-slider" data-dragging={dragging}>
+      <span className="slider-fill" aria-hidden="true" style={{ width: `${position}%` }} />
+      <span className="slider-ticks" aria-hidden="true">
+        {Array.from({ length: 9 }, (_, i) => <i key={i} style={{ left: `${(i + 1) * 10}%` }} />)}
+      </span>
+      <span className="slider-grip" aria-hidden="true" style={{ left: `clamp(4px, ${position}%, calc(100% - 6px))` }} />
+      <label htmlFor={id}>{label}</label>
+      <input id={id} type="range" min={min} max={max} step={step} value={value}
+        aria-valuetext={`${value}${suffix ?? ''}`}
+        onPointerDown={(e) => { setDragging(true); e.currentTarget.setPointerCapture(e.pointerId) }}
+        onPointerUp={() => setDragging(false)} onPointerCancel={() => setDragging(false)}
+        onLostPointerCapture={() => setDragging(false)}
+        onChange={(e) => update(e.target.valueAsNumber)} />
+      <span className="slider-value">
+        <input type="number" aria-label={`${label}, exact value`} min={min} max={max} step={step}
+          value={draft ?? value} onFocus={() => setDraft(String(value))}
+          onChange={(e) => setDraft(e.target.value)} onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.currentTarget.blur()
+            if (e.key === 'Escape') { e.preventDefault(); setDraft(String(value)); e.currentTarget.select() }
+          }} />
+        <span aria-hidden="true">{suffix}</span>
       </span>
     </div>
-    <input
-      type="range"
-      className="w-full"
-      min={min}
-      max={max}
-      step={step}
-      value={value}
-      onChange={(e) => onChange(parseFloat(e.target.value))}
-    />
-  </div>
-)
+  )
+}
 
 export const Toggle = ({ label, checked, onChange, hint }: { label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string }) => (
   <div className="flex items-start justify-between gap-3 py-1">
@@ -51,6 +73,7 @@ export const Toggle = ({ label, checked, onChange, hint }: { label: string; chec
       type="button"
       onClick={() => onChange(!checked)}
       className={`shrink-0 w-9 h-5 rounded-full transition-colors relative ${checked ? 'bg-white' : 'bg-panel-3'}`}
+      aria-label={label}
       aria-pressed={checked}
     >
       <span className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${checked ? 'bg-black left-[18px]' : 'bg-white left-0.5'}`} />
@@ -71,6 +94,7 @@ export const Segmented = <T extends string>({
         key={o.value}
         type="button"
         onClick={() => onChange(o.value)}
+        aria-pressed={value === o.value}
         className={`flex-1 text-xs py-1.5 rounded transition-colors ${
           value === o.value ? 'bg-panel-3 text-white' : 'text-muted hover:text-white'
         }`}
