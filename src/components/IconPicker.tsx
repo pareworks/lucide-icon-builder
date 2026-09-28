@@ -5,13 +5,11 @@ import { isSocialIcon } from '../lib/social'
 import { searchIcons, getIconComponent, iconLabel } from '../lib/lucide'
 
 type Props = { value: string; onChange: (name: string) => void; containerColor: string; iconColor: string; containerVisible: boolean }
-const PAGE_SIZE = 96
 
 export const IconPicker = ({ value, onChange, containerColor, iconColor, containerVisible }: Props) => {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<'all' | 'lucide' | 'social'>(() => isSocialIcon(value) ? 'social' : 'all')
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const dialog = useRef<HTMLDialogElement>(null)
   const resultsPane = useRef<HTMLDivElement>(null)
   const search = useRef<HTMLInputElement>(null)
@@ -24,7 +22,6 @@ export const IconPicker = ({ value, onChange, containerColor, iconColor, contain
   }, [open])
 
   const resetResults = () => {
-    setVisibleCount(PAGE_SIZE)
     resultsPane.current?.scrollTo({ top: 0 })
   }
 
@@ -65,7 +62,7 @@ export const IconPicker = ({ value, onChange, containerColor, iconColor, contain
         <div ref={resultsPane} className="icon-results scrollbar-thin">
           <p role="status" className="text-xs text-muted mb-3">{results.length.toLocaleString()} {category === 'social' ? 'logos' : 'icons'}{query ? ` matching “${query}”` : ''}</p>
           <div className="icon-grid">
-            {results.slice(0, visibleCount).map((name) => {
+            {results.map((name) => {
               const Icon = getIconComponent(name)
               if (!Icon) return null
               return <button key={name} type="button" className="icon-option" aria-label={iconLabel(name)}
@@ -77,8 +74,7 @@ export const IconPicker = ({ value, onChange, containerColor, iconColor, contain
             })}
           </div>
           {results.length === 0 && <p className="text-sm text-muted text-center py-12">No matches. Try another name.</p>}
-          {visibleCount < results.length && <button type="button" className="w-full rounded-md bg-panel-2 py-3 mt-4 text-sm text-white hover:bg-panel-3"
-            onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>Show more · {Math.min(visibleCount, results.length)} of {results.length.toLocaleString()}</button>}
+
         </div>
       </dialog>
     </>
