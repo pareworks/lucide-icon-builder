@@ -7,24 +7,25 @@ type Props = { label: string; value: string; onChange: (hex: string) => void }
 
 export const ColorPicker = ({ label, value, onChange }: Props) => {
   const [open, setOpen] = useState(false)
-  const [position, setPosition] = useState({ left: 0, top: 0 })
+  const [position, setPosition] = useState({ left: 0, top: 0, transformOrigin: 'left center' })
   const trigger = useRef<HTMLButtonElement>(null)
   const panel = useRef<HTMLDivElement>(null)
   const id = useId()
   const close = () => { setOpen(false); trigger.current?.focus() }
 
   useLayoutEffect(() => {
+    if (panel.current) panel.current.inert = !open
     if (!open) return
     const place = () => {
       if (!trigger.current || !panel.current) return
       const anchor = trigger.current.getBoundingClientRect()
       const sidebar = trigger.current.closest('aside')!.getBoundingClientRect()
-      const bounds = panel.current.getBoundingClientRect()
+      const bounds = { width: panel.current.offsetWidth, height: panel.current.offsetHeight }
       const beside = sidebar.right + 12
       const left = beside + bounds.width <= window.innerWidth - 16
         ? beside : Math.max(16, window.innerWidth - bounds.width - 16)
       const top = Math.max(16, Math.min(anchor.top, window.innerHeight - bounds.height - 16))
-      setPosition({ left, top })
+      setPosition({ left, top, transformOrigin: `${Math.max(0, Math.min(bounds.width, anchor.right - left))}px ${Math.max(0, Math.min(bounds.height, anchor.top + anchor.height / 2 - top))}px` })
     }
     place()
     window.addEventListener('resize', place)
@@ -60,8 +61,8 @@ export const ColorPicker = ({ label, value, onChange }: Props) => {
         <span className="w-5 h-5 rounded shrink-0" style={{ backgroundColor: value }} />
         <span className="font-mono text-sm">{value.toUpperCase()}</span>
       </button>
-      {open && createPortal(
-        <div ref={panel} id={id} role="dialog" aria-label={`${label} colour`} className="colour-popover" style={position}>
+      {createPortal(
+        <div ref={panel} id={id} role="dialog" data-open={open} aria-hidden={!open} aria-label={`${label} colour`} className="colour-popover" style={position}>
           <header className="flex items-center justify-between px-5 py-4">
             <h2 className="text-sm font-medium">{label} colour</h2>
             <button type="button" aria-label="Close colour picker" className="p-2 rounded hover:bg-panel-3" onClick={close}><X size={16} /></button>

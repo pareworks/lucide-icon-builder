@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { ChevronRight, Search, X } from 'lucide-react'
 import { Segmented } from './controls'
 import { isSocialIcon } from '../lib/social'
@@ -37,7 +38,7 @@ export const IconPicker = ({ value, onChange, containerColor, iconColor, contain
         </span>
         <ChevronRight size={16} className="text-muted" />
       </button>
-      <dialog ref={dialog} className="icon-dialog" aria-labelledby="icon-library-title"
+      {createPortal(<dialog ref={dialog} className="icon-dialog" aria-labelledby="icon-library-title"
         onCancel={() => setOpen(false)} onClose={() => setOpen(false)}
         onClick={(e) => {
           if (e.target !== e.currentTarget) return
@@ -46,7 +47,7 @@ export const IconPicker = ({ value, onChange, containerColor, iconColor, contain
         }}>
         <div className="p-7 pb-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 id="icon-library-title" className="text-base font-medium text-white">Choose an icon</h2>
+            <h2 id="icon-library-title" className="text-sm font-medium text-white">Choose an icon</h2>
             <button type="button" aria-label="Close icon library" className="p-2 rounded hover:bg-panel-3 text-muted" onClick={() => setOpen(false)}><X size={18} /></button>
           </div>
           <div className="relative">
@@ -76,7 +77,7 @@ export const IconPicker = ({ value, onChange, containerColor, iconColor, contain
           {results.length === 0 && <p className="text-sm text-muted text-center py-12">No matches. Try another name.</p>}
 
         </div>
-      </dialog>
+      </dialog>, document.body)}
     </>
   )
 }

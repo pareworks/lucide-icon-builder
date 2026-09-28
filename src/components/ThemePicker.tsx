@@ -80,7 +80,7 @@ export const ThemePicker = ({ value, onChange, containerColor, iconColor }: Prop
       {open && (
         <div
           role="listbox"
-          className="absolute top-full left-0 right-0 mt-1 bg-panel-2 rounded-md shadow-xl z-30 max-h-72 overflow-y-auto scrollbar-thin"
+          className="menu-popover absolute top-full left-0 right-0 mt-1 bg-panel-2 rounded-md shadow-xl z-30 max-h-72 overflow-y-auto scrollbar-thin"
         >
           <div className="p-1 space-y-0.5">
             {PALETTE.map((family) => {
@@ -95,7 +95,7 @@ export const ThemePicker = ({ value, onChange, containerColor, iconColor }: Prop
                     onChange(family.id)
                     setOpen(false)
                   }}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded ${
                     selected ? 'bg-panel-3' : 'hover:bg-panel-3/60'
                   }`}
                 >

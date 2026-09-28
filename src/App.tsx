@@ -30,15 +30,13 @@ export default function App() {
       <ResizableSidebar>
         <Sidebar config={config} setConfig={setConfig} artboardRef={artboardRef} />
       </ResizableSidebar>
-      <main className="flex-1 relative checker overflow-hidden">
+      <main className="flex-1 relative dot-grid overflow-hidden" style={{ backgroundSize: `${16 * zoom / 100}px ${16 * zoom / 100}px` }}>
         <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
           <div
-            className="rounded-sm shadow-2xl"
             style={{
               transform: `scale(${zoom / 100})`,
               transformOrigin: 'center center',
               transition: 'transform 120ms ease-out',
-              filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35))',
             }}
           >
             <Artboard ref={artboardRef} config={config} />

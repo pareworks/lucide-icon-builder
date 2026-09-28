@@ -83,7 +83,7 @@ export const ExportPanel = ({ config, artboardRef }: Props) => {
         <button
           type="button"
           onClick={handleCopy}
-          className="flex items-center justify-center gap-1.5 bg-panel-2 hover:bg-panel-3 text-white text-sm py-2 rounded-md transition-colors"
+          className="flex items-center justify-center gap-1.5 bg-panel-2 hover:bg-panel-3 text-white text-sm py-2 rounded-md"
         >
           {flash === 'copy' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
           {flash === 'copy' ? 'Copied' : 'Copy'}
@@ -91,7 +91,7 @@ export const ExportPanel = ({ config, artboardRef }: Props) => {
         <button
           type="button"
           onClick={handleDownload}
-          className="flex items-center justify-center gap-1.5 bg-panel-3 text-white text-sm py-2 rounded-md hover:bg-line transition-colors"
+          className="flex items-center justify-center gap-1.5 bg-panel-3 text-white text-sm py-2 rounded-md hover:bg-line"
         >
           {flash === 'download' ? <Check className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
           {flash === 'download' ? 'Saved' : 'Download'}

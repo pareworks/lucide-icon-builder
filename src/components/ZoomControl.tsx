@@ -50,7 +50,7 @@ export const ZoomControl = ({ value, onChange }: Props) => {
         {open && (
           <div
             role="listbox"
-            className="absolute bottom-full mb-1 right-0 bg-panel-2 rounded-md shadow-xl z-30 py-1 min-w-[160px]"
+            className="menu-popover menu-popover-up absolute bottom-full mb-1 right-0 bg-panel-2 rounded-md shadow-xl z-30 py-1 min-w-[160px]"
           >
             {ZOOM_LEVELS.map((z) => {
               const selected = z === value
@@ -65,13 +65,13 @@ export const ZoomControl = ({ value, onChange }: Props) => {
                     onChange(z)
                     setOpen(false)
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-2.5 py-1 text-xs tabular-nums transition-colors ${
+                  className={`w-full flex items-center justify-between gap-3 px-2.5 py-1 text-xs tabular-nums ${
                     selected ? 'bg-panel-3 text-white' : 'text-muted hover:bg-panel-3/60 hover:text-white'
                   }`}
                 >
                   <span className="flex items-baseline gap-1.5">
                     <span>{z}%</span>
-                    {actual && <span className="text-[10px] opacity-70">Actual size</span>}
+                    {actual && <span className="text-xs opacity-70">Actual size</span>}
                   </span>
                   {selected && <Check className="w-3 h-3 shrink-0" />}
                 </button>
@@ -84,7 +84,7 @@ export const ZoomControl = ({ value, onChange }: Props) => {
         type="button"
         onClick={() => onChange(DEFAULT_ZOOM)}
         disabled={isActual}
-        className="p-1.5 rounded bg-panel-2 hover:bg-panel-3 text-white transition-colors disabled:opacity-40 disabled:cursor-default disabled:hover:bg-panel-2"
+        className="p-1.5 rounded bg-panel-2 hover:bg-panel-3 text-white disabled:opacity-40 disabled:cursor-default disabled:hover:bg-panel-2"
         title="Reset zoom to 100% (actual size)"
         aria-label="Reset zoom to 100%"
       >

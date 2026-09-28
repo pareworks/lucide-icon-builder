@@ -72,11 +72,11 @@ export const Toggle = ({ label, checked, onChange, hint }: { label: string; chec
     <button
       type="button"
       onClick={() => onChange(!checked)}
-      className={`shrink-0 w-9 h-5 rounded-full transition-colors relative ${checked ? 'bg-white' : 'bg-panel-3'}`}
+      className={`shrink-0 w-9 h-5 rounded-full relative ${checked ? 'bg-white' : 'bg-panel-3'}`}
       aria-label={label}
       aria-pressed={checked}
     >
-      <span className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${checked ? 'bg-black left-[18px]' : 'bg-white left-0.5'}`} />
+      <span className={`toggle-thumb absolute top-0.5 left-0.5 w-4 h-4 rounded-full ${checked ? 'bg-black translate-x-4' : 'bg-white translate-x-0'}`} />
     </button>
   </div>
 )
@@ -95,7 +95,7 @@ export const Segmented = <T extends string>({
         type="button"
         onClick={() => onChange(o.value)}
         aria-pressed={value === o.value}
-        className={`flex-1 text-xs py-2.5 rounded-md transition-colors ${
+        className={`flex-1 text-xs py-2.5 rounded-md ${
           value === o.value ? 'bg-panel-3 text-white' : 'text-muted hover:text-white'
         }`}
       >
