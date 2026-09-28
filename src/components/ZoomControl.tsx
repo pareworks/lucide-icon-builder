@@ -50,7 +50,7 @@ export const ZoomControl = ({ value, onChange }: Props) => {
         {open && (
           <div
             role="listbox"
-            className="absolute bottom-full mb-1 right-0 bg-panel-2 border border-line rounded-md shadow-xl z-30 py-1 min-w-[160px]"
+            className="absolute bottom-full mb-1 right-0 bg-panel-2 rounded-md shadow-xl z-30 py-1 min-w-[160px]"
           >
             {ZOOM_LEVELS.map((z) => {
               const selected = z === value
@@ -71,7 +71,7 @@ export const ZoomControl = ({ value, onChange }: Props) => {
                 >
                   <span className="flex items-baseline gap-1.5">
                     <span>{z}%</span>
-                    {actual && <span className="text-[10px] uppercase tracking-wider opacity-70">Actual size</span>}
+                    {actual && <span className="text-[10px] opacity-70">Actual size</span>}
                   </span>
                   {selected && <Check className="w-3 h-3 shrink-0" />}
                 </button>

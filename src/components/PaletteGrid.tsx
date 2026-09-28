@@ -1,35 +1,23 @@
 import { PALETTE, SHADES } from '../data/palette'
 
-type Props = {
-  value: string
-  onChange: (hex: string) => void
-}
+type Props = { value: string; onChange: (hex: string) => void }
 
-export const PaletteGrid = ({ value, onChange }: Props) => {
-  const norm = value.toUpperCase()
-  return (
-    <div className="space-y-1">
-      {PALETTE.map((family) => (
-        <div key={family.id} className="flex items-center gap-2">
-          <div className="w-16 shrink-0 text-[10px] text-muted truncate">{family.name}</div>
-          <div className="flex gap-0.5 flex-1">
-            {SHADES.map((s) => {
-              const hex = family.shades[s].toUpperCase()
-              const selected = hex === norm
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => onChange(family.shades[s])}
-                  title={`${family.name} ${s} — ${family.shades[s]}`}
-                  className={`flex-1 aspect-square rounded-sm transition-transform ${selected ? 'ring-2 ring-white scale-110 z-10 relative' : 'hover:scale-105'}`}
-                  style={{ backgroundColor: family.shades[s] }}
-                />
-              )
-            })}
-          </div>
-        </div>
-      ))}
+export const PaletteGrid = ({ value, onChange }: Props) => (
+  <div className="palette-grid">
+    <div className="palette-row palette-heading" aria-hidden="true">
+      <span />{SHADES.map((shade) => <span key={shade}>{shade}</span>)}
     </div>
-  )
-}
+    {PALETTE.map((family) => (
+      <div key={family.id} className="palette-row">
+        <span className="palette-family">{family.name.charAt(0) + family.name.slice(1).toLowerCase()}</span>
+        {SHADES.map((shade) => {
+          const hex = family.shades[shade]
+          const selected = hex.toLowerCase() === value.toLowerCase()
+          return <button key={shade} type="button" className="palette-swatch" aria-pressed={selected}
+            aria-label={`${family.name} ${shade}, ${hex}`} title={`${family.name} ${shade} · ${hex}`}
+            style={{ backgroundColor: hex }} onClick={() => onChange(hex)} />
+        })}
+      </div>
+    ))}
+  </div>
+)
